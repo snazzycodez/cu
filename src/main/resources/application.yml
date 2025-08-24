@@ -1,0 +1,71 @@
+spring:
+  profiles:
+    active: dev
+  
+  # 첫 번째 데이터베이스 (Primary DB)
+  datasource:
+    primary:
+      jdbc-url: jdbc:postgresql://localhost:5432/primary_db
+      username: postgres
+      password: password
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+    
+    # 두 번째 데이터베이스 (Secondary DB)
+    secondary:
+      jdbc-url: jdbc:postgresql://localhost:5432/secondary_db
+      username: postgres
+      password: password
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+# MyBatis 설정
+mybatis:
+  primary:
+    mapper-locations: classpath:mapper/primary/*.xml
+    type-aliases-package: com.example.multidb.entity.primary
+    configuration:
+      map-underscore-to-camel-case: true
+      cache-enabled: true
+      lazy-loading-enabled: true
+      aggressive-lazy-loading: false
+      default-executor-type: SIMPLE
+      default-statement-timeout: 30
+      default-fetch-size: 100
+  
+  secondary:
+    mapper-locations: classpath:mapper/secondary/*.xml
+    type-aliases-package: com.example.multidb.entity.secondary
+    configuration:
+      map-underscore-to-camel-case: true
+      cache-enabled: true
+      lazy-loading-enabled: true
+      aggressive-lazy-loading: false
+      default-executor-type: SIMPLE
+      default-statement-timeout: 30
+      default-fetch-size: 100
+
+# 로깅 설정
+logging:
+  level:
+    com.example.multidb: DEBUG
+    org.mybatis: DEBUG
+    org.springframework.jdbc: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 서버 설정
+server:
+  port: 8080
+  servlet:
+    context-path: /api
